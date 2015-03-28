@@ -1,0 +1,17 @@
+{
+  "name": "tombo",
+  "version": "0.0.1",
+  "engines": {
+    "node": "0.12.x"
+  },
+  "dependencies": {
+    "body-parser": "~1.10.2",
+    "debug": "~2.1.1",
+    "express": "~4.11.1",
+    "gm": "~1.17.0",
+    "lodash": "~3.6.0",
+    "morgan": "~1.5.1",
+    "request": "~2.53.0 ",
+    "serve-favicon": "~2.2.0"
+  }
+}
