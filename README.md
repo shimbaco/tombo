@@ -14,7 +14,7 @@ Node.jsで動く画像変換サーバです。Amazon S3などにアップロー�
 ## 環境
 
 * [Node.js](https://nodejs.org/)
-  * [Express](http://expressjs.com/)
+  * [Koa](http://koajs.com/)
   * [gm](http://aheckmann.github.io/gm/)
 * [ImageMagick](http://www.imagemagick.org/)
 
