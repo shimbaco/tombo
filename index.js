@@ -1,45 +1,40 @@
 var crypto = require("crypto");
 var fs     = require("fs");
 
-var express = require("express");
-var request = require("request");
-var _       = require("lodash");
+var koa         = require("koa");
+var koaRouter   = require("koa-router");
+var koaSendfile = require('koa-sendfile');
+var _           = require("lodash");
 
 var parameter = require("./lib/parameter");
 var image     = require("./lib/image");
 
-var app = express();
+var app    = koa();
+var router = koaRouter();
 
-app.set("port", (process.env.PORT || 5000));
-app.set("imageHost", process.env.TOMBO_IMAGE_HOST);
+const port      = process.env.PORT || 5000;
+const imageHost = process.env.TOMBO_IMAGE_HOST;
 
-app.get("/:joinedParams([0-9a-zA-Z:,]+)/:path*", function(req, res) {
-  var path = req.params.path + req.params[0];
-  var url  = app.get("imageHost") + "/" + path;
+router.get("/:joinedParams([0-9a-zA-Z:,]+)/:path*", show);
+app.use(router.routes());
 
-  request.get({ url: url, encoding: null }, function(err, imgRes, imgBody) {
-    if (imgRes.statusCode === 200) {
-      var params   = parameter.convert(req.params.joinedParams);
-      var fileName = crypto.randomBytes(8).toString("hex");
+function *show() {
+  var url  = imageHost + "/" + this.params.path;
+  var response = yield image.fetch(url);
 
-      image.convert(imgBody, fileName, params, function(err) {
-        if (err) return console.log(err);
+  if (response.statusCode === 200) {
+    this.type = "image/jpeg"
+    var params   = parameter.convert(this.params.joinedParams);
+    var fileName = crypto.randomBytes(8).toString("hex");
+    yield image.convert(response.body, fileName, params);
 
-        var options = {
-          root: "/tmp",
-          headers: {
-            "Content-Type": "image/jpeg"
-          }
-        };
+    var filePath = "/tmp/" + fileName + ".jpg";
+    var stats = yield* koaSendfile.call(this, filePath);
+  } else {
+    this.status = 404;
+    this.body = "Image Not Found";
+  }
+}
 
-        res.sendFile(fileName + ".jpg", options);
-      });
-    } else {
-      res.status(404).send("Image Not Found");
-    }
-  });
-});
-
-app.listen(app.get("port"), function() {
-  console.log("Node app is running at localhost:" + app.get("port"));
-});
+app.listen(port);
+console.log("Node app is running at localhost:" + port);

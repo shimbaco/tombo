@@ -5,13 +5,11 @@
     "node": "0.12.x"
   },
   "dependencies": {
-    "body-parser": "~1.10.2",
-    "debug": "~2.1.1",
-    "express": "~4.11.1",
-    "gm": "~1.17.0",
-    "lodash": "~3.6.0",
-    "morgan": "~1.5.1",
-    "request": "~2.53.0 ",
-    "serve-favicon": "~2.2.0"
+    "gm":           "~1.17.0",
+    "koa":          "~0.19.0",
+    "koa-router":   "~4.3.2",
+    "koa-sendfile": "~1.1.0",
+    "lodash":       "~3.6.0",
+    "request":      "~2.53.0 "
   }
 }
